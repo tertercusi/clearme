@@ -1,15 +1,15 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page class="column q-pa-md q-gutter-md">
+    <student-card></student-card>
+    <departments-card></departments-card>
   </q-page>
 </template>
 
 <script setup>
+import StudentCard from "components/StudentCard.vue";
+import DepartmentsCard from "components/DepartmentsCard.vue";
+
 defineOptions({
-  name: 'IndexPage'
+  name: "IndexPage",
 });
 </script>
