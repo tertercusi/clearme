@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="student-card">
+  <q-card flat bordered class="accent-border">
     <q-card-section class="column q-gutter-xs items-center">
       <q-avatar
         icon="person"
@@ -18,9 +18,3 @@
     </q-card-section>
   </q-card>
 </template>
-
-<style lang="scss">
-.student-card {
-  border-bottom: 0.25em solid $primary;
-}
-</style>

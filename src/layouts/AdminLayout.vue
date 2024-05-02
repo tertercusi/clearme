@@ -1,11 +1,15 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr fFf">
+    <!-- Be sure to play with the Layout demo on docs -->
+
+    <!-- (Optional) A Drawer; you can add one more with side="right" or change this one's side -->
     <q-drawer
       v-model="$q.platform.is.desktop"
-      class="bg-primary column q-gutter-md"
+      class="bg-primary column q-gutter-md text-white"
     >
       <logo-image class="self-center"></logo-image>
-      <div class="text-h5 text-center text-white">CCA Clearance System</div>
+      <div class="text-h5 text-center">CCA Clearance System</div>
+      <div class="text-h6 text-center">Admin Hub</div>
       <q-list>
         <q-item
           v-for="tab in tabList"
@@ -25,25 +29,14 @@
         </q-item>
       </q-list>
     </q-drawer>
-    <q-footer v-if="!$q.platform.is.desktop">
-      <q-tabs active-bg-color="secondary" no-caps>
-        <q-route-tab
-          v-for="tab in tabList"
-          :key="tab.label"
-          :label="tab.label"
-          :icon="tab.icon"
-          :to="tab.to"
-        >
-        </q-route-tab>
-      </q-tabs>
-    </q-footer>
 
     <q-page-container
       :style="{
         background: `#FFFFFF url(${bgImage}) 70% 50% / cover no-repeat fixed`,
       }"
     >
-      <router-view class="limit-width q-mx-auto" />
+      <!-- This is where pages get injected -->
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -53,29 +46,23 @@ import bgImage from "assets/phoenix-background.png";
 import LogoImage from "src/components/LogoImage.vue";
 import { useQuasar } from "quasar";
 
+const $q = useQuasar();
+
 const tabList = [
   {
-    label: "Home",
-    icon: "home",
-    to: "/",
+    label: "Students",
+    icon: "school",
+    to: "/admin",
   },
   {
-    label: "Notifications",
-    icon: "notifications",
-    to: "/notifications",
+    label: "Faculties",
+    icon: "assignment_ind",
+    to: "/admin/faculty",
   },
   {
-    label: "Profile",
-    icon: "person",
-    to: "/profile",
+    label: "Sections",
+    icon: "groups",
+    to: "/admin/sections",
   },
 ];
-
-const $q = useQuasar();
 </script>
-
-<style lang="scss">
-.limit-width {
-  max-width: $breakpoint-xs-max;
-}
-</style>
