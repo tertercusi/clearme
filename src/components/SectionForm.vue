@@ -48,16 +48,27 @@
         label="Delete"
         color="negative"
         class="col"
+        @click="del"
       ></q-btn>
     </div>
   </q-form>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
+
+import { useFirestore } from "vuefire";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 const props = defineProps(["edit"]);
-const emit = defineEmits(["complete"]);
+const emit = defineEmits(["complete", "delete"]);
 
 const code = ref("");
 const course = ref("");
@@ -71,7 +82,39 @@ function removeDepartment(index) {
   departments.value.splice(index, 1);
 }
 
+const firestore = useFirestore();
+const sectionsCollection = collection(firestore, "sections");
+const editDocRef = computed(() =>
+  props.edit ? doc(sectionsCollection, props.edit) : null
+);
+
+watchEffect(async () => {
+  if (editDocRef.value) {
+    const editDoc = await getDoc(editDocRef.value);
+    code.value = editDoc.get("section");
+    course.value = editDoc.get("course");
+    departments.value = editDoc.get("departments");
+  }
+});
+
 function save() {
+  const newData = {
+    section: code.value,
+    course: course.value,
+    departments: departments.value,
+  };
+
+  if (editDocRef.value) {
+    updateDoc(editDocRef.value, newData);
+  } else {
+    addDoc(sectionsCollection, newData);
+  }
+
   emit("complete");
+}
+
+function del() {
+  deleteDoc(editDocRef.value);
+  emit("delete");
 }
 </script>
