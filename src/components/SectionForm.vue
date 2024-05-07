@@ -1,8 +1,8 @@
 <template>
-  <q-form class="column q-gutter-md">
+  <q-form class="column q-gutter-md q-pr-md">
     <q-input v-model="code" label="Name" outlined></q-input>
     <q-input v-model="course" label="Course" outlined></q-input>
-    <q-separator inset></q-separator>
+    <q-separator></q-separator>
     <q-toolbar>
       <q-toolbar-title> Departments </q-toolbar-title>
       <q-space></q-space>

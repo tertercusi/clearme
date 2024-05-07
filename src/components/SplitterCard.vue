@@ -7,10 +7,10 @@
         :limits="[30, 50]"
       >
         <template #before>
-          <slot name="left" style="overflow-y: scroll"></slot>
+          <slot name="left"></slot>
         </template>
         <template #after>
-          <slot name="right" style="overflow-y: scroll"></slot>
+          <slot name="right"></slot>
         </template>
       </q-splitter>
     </q-card-section>

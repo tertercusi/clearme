@@ -11,7 +11,7 @@
     <splitter-card class="col">
       <template #left>
         <q-virtual-scroll
-          style="max-height: 100%; box-sizing: border-box"
+          style="height: 75vh; box-sizing: border-box"
           separator
           v-slot="{ item, index }"
         >
@@ -23,9 +23,9 @@
         </q-virtual-scroll>
       </template>
       <template #right>
-        <div class="q-pa-md" style="overflow: auto; max-height: 100%">
+        <q-scroll-area class="q-pa-md" style="height: 75vh">
           <section-form edit="true"> </section-form>
-        </div>
+        </q-scroll-area>
       </template>
     </splitter-card>
   </q-page>
