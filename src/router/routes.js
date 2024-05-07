@@ -24,7 +24,10 @@ const routes = [
   {
     path: "/admin",
     component: () => import("layouts/AdminLayout.vue"),
-    children: [{ path: "", component: () => import("pages/AdminHome.vue") }],
+    children: [
+      { path: "", component: () => import("pages/AdminHome.vue") },
+      { path: "sections", component: () => import("pages/AdminSections.vue") },
+    ],
   },
 
   // Always leave this as last one,
