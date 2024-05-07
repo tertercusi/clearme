@@ -1,5 +1,5 @@
 <template>
-  <q-form class="column q-gutter-md q-pr-md">
+  <q-form class="column q-gutter-md">
     <q-input v-model="code" label="Name" outlined></q-input>
     <q-input v-model="course" label="Course" outlined></q-input>
     <q-separator></q-separator>

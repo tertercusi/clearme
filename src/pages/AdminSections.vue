@@ -24,7 +24,7 @@
       </template>
       <template #right>
         <q-scroll-area class="q-pa-md" style="height: 75vh">
-          <section-form edit="true"> </section-form>
+          <section-form edit="true" class="q-pr-md"> </section-form>
         </q-scroll-area>
       </template>
     </splitter-card>
