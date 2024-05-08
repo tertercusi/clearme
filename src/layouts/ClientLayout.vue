@@ -3,6 +3,7 @@
     <q-drawer
       v-model="$q.platform.is.desktop"
       class="bg-primary column q-gutter-md"
+      :breakpoint="0"
     >
       <logo-image class="self-center"></logo-image>
       <div class="text-h5 text-center text-white">CCA Clearance System</div>
