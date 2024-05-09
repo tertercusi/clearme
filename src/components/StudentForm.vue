@@ -1,15 +1,28 @@
 <template>
   <q-form class="column q-gutter-md">
-    <q-input v-model="number" label="ID Number" outlined></q-input>
+    <q-input
+      v-model="number"
+      label="ID Number"
+      outlined
+      :readonly="!!edit"
+    ></q-input>
     <q-input v-model="name" label="Name" outlined></q-input>
     <q-input v-model="email" label="Email" outlined></q-input>
     <q-select
+      v-if="!edit"
       v-model="section"
       label="Course"
       outlined
       :options="sectionsSnapshot"
       option-label="section"
     ></q-select>
+    <q-input
+      v-else
+      v-model="section"
+      label="Section"
+      outlined
+      readonly
+    ></q-input>
 
     <template v-if="section">
       <q-separator></q-separator>
@@ -17,26 +30,69 @@
       <q-toolbar>
         <q-toolbar-title> Departments </q-toolbar-title>
       </q-toolbar>
-      <template v-for="(department, index) of section.departments" :key="index">
-        <q-card flat bordered>
+      <template v-if="!edit">
+        <q-card
+          v-for="(department, index) of section.departments"
+          :key="index"
+          flat
+          bordered
+        >
           <q-card-section class="column q-gutter-md">
             <div class="row items-center">
               <div class="col">{{ department }}</div>
               <q-select
+                v-model="records[department].status"
                 class="col"
                 :options="clearStatusOptions"
                 option-label="label"
                 option-value="value"
                 outlined
+                emit-value
+                map-options
               ></q-select>
             </div>
-            <q-input type="textarea" filled label="Message"></q-input>
+            <q-input
+              v-model="records[department].message"
+              type="textarea"
+              filled
+              label="Message"
+            ></q-input>
+          </q-card-section>
+        </q-card>
+      </template>
+
+      <template v-else>
+        <q-card
+          v-for="(record, department) in records"
+          :key="department"
+          flat
+          bordered
+        >
+          <q-card-section class="column q-gutter-md">
+            <div class="row items-center">
+              <div class="col">{{ department }}</div>
+              <q-select
+                v-model="records[department].status"
+                class="col"
+                :options="clearStatusOptions"
+                option-label="label"
+                option-value="value"
+                outlined
+                emit-value
+                map-options
+              ></q-select>
+            </div>
+            <q-input
+              v-model="records[department].message"
+              type="textarea"
+              filled
+              label="Message"
+            ></q-input>
           </q-card-section>
         </q-card>
       </template>
     </template>
 
-    <q-separator></q-separator>
     <div class="row" inset>
       <q-btn
         flat
@@ -75,9 +131,10 @@ const emit = defineEmits(["complete", "delete"]);
 
 const name = ref("");
 const section = ref("");
-const records = ref([]);
+const records = ref({});
 const email = ref("");
 const number = ref("");
+const course = ref("");
 
 const firestore = useFirestore();
 const studentsCollection = collection(firestore, "students");
@@ -91,25 +148,39 @@ const sectionsSnapshot = useCollection(sectionsCollection);
 watchEffect(async () => {
   if (editDocRef.value) {
     const editDoc = await getDoc(editDocRef.value);
-    name.value = editDoc.get("section");
-    section.value = editDoc.get("course");
-    records.value = editDoc.get("departments");
+    name.value = editDoc.get("name");
+    section.value = editDoc.get("section");
+    records.value = editDoc.get("records");
+    email.value = editDoc.get("email");
+    number.value = editDoc.get("number");
+    course.value = editDoc.get("course");
   }
 
-  console.log(sectionsSnapshot.value);
+  if (section.value && !props.edit) {
+    for (const record of section.value.departments) {
+      records.value[record] = {};
+      records.value[record].status = 0;
+      records.value[record].message = "";
+    }
+  }
+
+  console.log(records.value);
 });
 
 function save() {
   const newData = {
-    section: name.value,
-    course: section.value,
-    departments: records.value,
+    section: props.edit ? section.value : section.value.section,
+    course: props.edit ? course.value : section.value.course,
+    email: email.value,
+    number: number.value,
+    name: name.value,
+    records: records.value,
   };
 
   if (editDocRef.value) {
     updateDoc(editDocRef.value, newData);
   } else {
-    addDoc(sectionsCollection, newData);
+    addDoc(studentsCollection, newData);
   }
 
   emit("complete");

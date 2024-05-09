@@ -25,9 +25,7 @@
             @click="() => setEditView(item.id)"
           >
             <q-item-section>
-              <q-item-label>
-                {{ item.section }} - {{ item.course }}
-              </q-item-label>
+              <q-item-label> {{ item.name }} ({{ item.number }}) </q-item-label>
             </q-item-section>
           </q-item>
         </q-virtual-scroll>
@@ -58,8 +56,8 @@ import { collection } from "firebase/firestore";
 import { ref } from "vue";
 
 const firestore = useFirestore();
-const sectionsCollection = collection(firestore, "sections");
-const snapshot = useCollection(sectionsCollection);
+const studentsCollection = collection(firestore, "students");
+const snapshot = useCollection(studentsCollection);
 
 const currentEdit = ref(null);
 function setEditView(id) {
