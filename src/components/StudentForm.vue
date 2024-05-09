@@ -163,8 +163,6 @@ watchEffect(async () => {
       records.value[record].message = "";
     }
   }
-
-  console.log(records.value);
 });
 
 function save() {
