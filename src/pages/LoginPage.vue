@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md column q-gutter-md">
     <q-card flat>
-      <q-card-section>
+      <q-card-section class="row justify-center">
         <logo-image></logo-image>
       </q-card-section>
       <q-card-section class="column q-gutter-md">

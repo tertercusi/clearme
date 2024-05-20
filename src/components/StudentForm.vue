@@ -118,13 +118,14 @@ import { computed, ref, watchEffect } from "vue";
 
 import { useCollection, useFirestore } from "vuefire";
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
   getDoc,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const props = defineProps(["edit"]);
 const emit = defineEmits(["complete", "delete"]);
@@ -137,7 +138,7 @@ const number = ref("");
 const course = ref("");
 
 const firestore = useFirestore();
-const studentsCollection = collection(firestore, "students");
+const studentsCollection = collection(firestore, "users");
 const sectionsCollection = collection(firestore, "sections");
 const editDocRef = computed(() =>
   props.edit ? doc(studentsCollection, props.edit) : null
@@ -165,7 +166,13 @@ watchEffect(async () => {
   }
 });
 
-function save() {
+async function save() {
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email.value,
+    number.value
+  );
+
   const newData = {
     section: props.edit ? section.value : section.value.section,
     course: props.edit ? course.value : section.value.course,
@@ -173,12 +180,13 @@ function save() {
     number: number.value,
     name: name.value,
     records: records.value,
+    isStudent: true,
   };
 
   if (editDocRef.value) {
     updateDoc(editDocRef.value, newData);
   } else {
-    addDoc(studentsCollection, newData);
+    setDoc(doc(studentsCollection, credential.user.uid), newData);
   }
 
   emit("complete");

@@ -27,6 +27,7 @@ const routes = [
     children: [
       { path: "", component: () => import("pages/AdminHome.vue") },
       { path: "sections", component: () => import("pages/AdminSections.vue") },
+      { path: "faculty", component: () => import("pages/AdminFaculty.vue") },
     ],
   },
 
