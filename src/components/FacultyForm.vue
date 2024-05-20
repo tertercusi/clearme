@@ -79,6 +79,7 @@ async function save() {
     number: number.value,
     name: name.value,
     isStudent: false,
+    userId: credential.user.uid,
   };
 
   if (editDocRef.value) {

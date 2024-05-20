@@ -116,7 +116,7 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
 
-import { useCollection, useFirestore } from "vuefire";
+import { useCollection, useFirebaseAuth, useFirestore } from "vuefire";
 import {
   collection,
   deleteDoc,
@@ -125,10 +125,11 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 
 const props = defineProps(["edit"]);
 const emit = defineEmits(["complete", "delete"]);
+const auth = useFirebaseAuth();
 
 const name = ref("");
 const section = ref("");
@@ -136,6 +137,7 @@ const records = ref({});
 const email = ref("");
 const number = ref("");
 const course = ref("");
+const userId = ref("");
 
 const firestore = useFirestore();
 const studentsCollection = collection(firestore, "users");
@@ -155,6 +157,7 @@ watchEffect(async () => {
     email.value = editDoc.get("email");
     number.value = editDoc.get("number");
     course.value = editDoc.get("course");
+    userId.value = editDoc.get("userId");
   }
 
   if (section.value && !props.edit) {
@@ -181,6 +184,7 @@ async function save() {
     name: name.value,
     records: records.value,
     isStudent: true,
+    userId: credential.user.uid,
   };
 
   if (editDocRef.value) {
@@ -192,7 +196,7 @@ async function save() {
   emit("complete");
 }
 
-function del() {
+async function del() {
   deleteDoc(editDocRef.value);
   emit("delete");
 }
