@@ -1,6 +1,7 @@
 const routes = [
   {
     path: "/",
+    meta: { requiresAuth: true },
     component: () => import("layouts/ClientLayout.vue"),
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
@@ -18,12 +19,17 @@ const routes = [
     path: "/",
     component: () => import("layouts/BlankLayout.vue"),
     children: [
-      { path: "login", component: () => import("pages/LoginPage.vue") },
+      {
+        path: "login",
+        name: "login",
+        component: () => import("pages/LoginPage.vue"),
+      },
     ],
   },
   {
     path: "/admin",
     component: () => import("layouts/AdminLayout.vue"),
+    meta: { isAdmin: true, requiresAuth: true },
     children: [
       { path: "", component: () => import("pages/AdminHome.vue") },
       { path: "sections", component: () => import("pages/AdminSections.vue") },
