@@ -28,7 +28,7 @@ const db = useFirestore();
 const router = useRouter();
 
 const email = ref("");
-const password = password("");
+const password = ref("");
 
 async function login() {
   try {

@@ -32,7 +32,7 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
 
-import { useFirebaseAuth, useFirestore } from "vuefire";
+import { useFirebaseApp, useFirebaseAuth, useFirestore } from "vuefire";
 import {
   collection,
   deleteDoc,
@@ -41,8 +41,9 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
+const app = useFirebaseApp();
 const auth = useFirebaseAuth();
 
 const props = defineProps(["edit"]);
@@ -68,23 +69,24 @@ watchEffect(async () => {
 });
 
 async function save() {
-  const credential = await createUserWithEmailAndPassword(
-    auth,
-    email.value,
-    number.value
-  );
-
   const newData = {
     email: email.value,
     number: number.value,
     name: name.value,
     isStudent: false,
-    userId: credential.user.uid,
   };
 
   if (editDocRef.value) {
     updateDoc(editDocRef.value, newData);
   } else {
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      number.value
+    );
+    await updateProfile(credential.user, { displayName: name.value });
+
+    newData.userId = credential.user.uid;
     setDoc(doc(facultiesCollection, credential.user.uid), newData);
   }
 

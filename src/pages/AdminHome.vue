@@ -56,7 +56,7 @@ import { collection, query, where } from "firebase/firestore";
 import { ref } from "vue";
 
 const firestore = useFirestore();
-const studentsCollection = collection(firestore, "students");
+const studentsCollection = collection(firestore, "users");
 const snapshot = useCollection(
   query(studentsCollection, where("isStudent", "==", true))
 );

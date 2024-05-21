@@ -9,12 +9,28 @@
         class="q-mb-lg"
       ></q-avatar>
       <span class="text-weight-medium" style="font-size: 1.5em">
-        Terence Cusi
+        {{ userSnapshot?.name }}
       </span>
-      <span>BSCS C202</span>
-      <span class="text-weight-medium text-grey-7" style="font-size: 1em">
-        22-0529
-      </span>
+      <span> {{ userSnapshot?.email }} </span>
+      <template v-if="userSnapshot?.isStudent">
+        <span> {{ userSnapshot?.course }} {{ userSnapshot?.section }} </span>
+        <span class="text-weight-medium text-grey-7" style="font-size: 1em">
+          {{ userSnapshot?.number }}
+        </span>
+      </template>
     </q-card-section>
   </q-card>
 </template>
+
+<script setup>
+import { doc } from "firebase/firestore";
+import { computed } from "vue";
+import { useCurrentUser, useDocument, useFirestore } from "vuefire";
+
+const user = useCurrentUser();
+const firestore = useFirestore();
+const userRef = computed(() =>
+  user.value?.uid ? doc(firestore, "users", user.value.uid) : null
+);
+const userSnapshot = useDocument(userRef);
+</script>

@@ -123,7 +123,6 @@ import {
   useCurrentUser,
 } from "vuefire";
 import {
-  Timestamp,
   addDoc,
   collection,
   deleteDoc,
@@ -133,6 +132,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
+import { DateTime } from "luxon";
 
 const props = defineProps(["edit"]);
 const emit = defineEmits(["complete", "delete"]);
@@ -185,6 +186,7 @@ async function save() {
     name: name.value,
     records: records.value,
     isStudent: true,
+    dateUpdated: DateTime.now().toSeconds(),
   };
 
   if (!editDocRef.value) {
@@ -195,12 +197,12 @@ async function save() {
     );
     await updateProfile(credential.user, { displayName: name.value });
 
-    newData.userId = credential.user.id;
+    newData.userId = credential.user.uid;
     const newDocRef = doc(studentsCollection, credential.user.uid);
     await setDoc(newDocRef, newData);
 
     await notify(
-      credential.user.id,
+      credential.user.uid,
       user.value.displayName,
       "Your record has been created."
     );
@@ -220,7 +222,7 @@ async function notify(id, name, message) {
   await addDoc(collection(firestore, "notifications"), {
     for: id,
     name: name,
-    date: new Timestamp(Date.now() / 1000),
+    date: DateTime.now().toSeconds(),
     message: message,
   });
 }

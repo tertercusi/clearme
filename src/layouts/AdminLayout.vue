@@ -65,5 +65,10 @@ const tabList = [
     icon: "groups",
     to: "/admin/sections",
   },
+  {
+    label: "Profile",
+    icon: "person",
+    to: "/admin/profile",
+  },
 ];
 </script>

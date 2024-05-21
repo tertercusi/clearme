@@ -34,6 +34,7 @@ const routes = [
       { path: "", component: () => import("pages/AdminHome.vue") },
       { path: "sections", component: () => import("pages/AdminSections.vue") },
       { path: "faculty", component: () => import("pages/AdminFaculty.vue") },
+      { path: "profile", component: () => import("pages/ProfilePage.vue") },
     ],
   },
 
