@@ -116,8 +116,15 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
 
-import { useCollection, useFirebaseAuth, useFirestore } from "vuefire";
 import {
+  useCollection,
+  useFirebaseAuth,
+  useFirestore,
+  useCurrentUser,
+} from "vuefire";
+import {
+  Timestamp,
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -125,11 +132,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const props = defineProps(["edit"]);
 const emit = defineEmits(["complete", "delete"]);
 const auth = useFirebaseAuth();
+const user = useCurrentUser();
 
 const name = ref("");
 const section = ref("");
@@ -147,7 +155,6 @@ const editDocRef = computed(() =>
 );
 
 const sectionsSnapshot = useCollection(sectionsCollection);
-
 watchEffect(async () => {
   if (editDocRef.value) {
     const editDoc = await getDoc(editDocRef.value);
@@ -170,12 +177,6 @@ watchEffect(async () => {
 });
 
 async function save() {
-  const credential = await createUserWithEmailAndPassword(
-    auth,
-    email.value,
-    number.value
-  );
-
   const newData = {
     section: props.edit ? section.value : section.value.section,
     course: props.edit ? course.value : section.value.course,
@@ -184,16 +185,44 @@ async function save() {
     name: name.value,
     records: records.value,
     isStudent: true,
-    userId: credential.user.uid,
   };
 
-  if (editDocRef.value) {
-    updateDoc(editDocRef.value, newData);
+  if (!editDocRef.value) {
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      number.value
+    );
+    await updateProfile(credential.user, { displayName: name.value });
+
+    newData.userId = credential.user.id;
+    const newDocRef = doc(studentsCollection, credential.user.uid);
+    await setDoc(newDocRef, newData);
+
+    await notify(
+      credential.user.id,
+      user.value.displayName,
+      "Your record has been created."
+    );
   } else {
-    setDoc(doc(studentsCollection, credential.user.uid), newData);
+    await updateDoc(editDocRef.value, newData);
+    await notify(
+      editDocRef.value.id,
+      user.value.displayName,
+      "Your record has been updated."
+    );
   }
 
   emit("complete");
+}
+
+async function notify(id, name, message) {
+  await addDoc(collection(firestore, "notifications"), {
+    for: id,
+    name: name,
+    date: new Timestamp(Date.now() / 1000),
+    message: message,
+  });
 }
 
 async function del() {
