@@ -32,7 +32,7 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
 
-import { useFirebaseApp, useFirebaseAuth, useFirestore } from "vuefire";
+import { useFirebaseAuth, useFirestore } from "vuefire";
 import {
   collection,
   deleteDoc,
@@ -43,7 +43,6 @@ import {
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
-const app = useFirebaseApp();
 const auth = useFirebaseAuth();
 
 const props = defineProps(["edit"]);
