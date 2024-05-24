@@ -19,7 +19,8 @@
           >
             <q-card>
               <q-card-section>
-                <p>{{ data.message }}</p>
+                <p v-if="data.message">{{ data.message }}</p>
+                <p class="text-center text-grey-5 text-italic">No message.</p>
               </q-card-section>
             </q-card>
           </q-expansion-item>
@@ -47,8 +48,8 @@ const userRef = computed(() => doc(firestore, "users", user.value.uid));
 const userDoc = useDocument(userRef);
 
 const lastUpdate = computed(() =>
-  DateTime.fromSeconds(userDoc.value?.lastUpdated ?? 0).toFormat(
-    DateTime.DATETIME_MED
+  DateTime.fromSeconds(userDoc.value?.dateUpdated ?? 0).toLocaleString(
+    DateTime.DATETIME_SHORT
   )
 );
 </script>

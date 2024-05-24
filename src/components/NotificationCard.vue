@@ -31,7 +31,7 @@ import { useFirestore } from "vuefire";
 
 const props = defineProps(["name", "timestamp", "message", "id"]);
 const timestamp = computed(() =>
-  DateTime.fromSeconds(props.timestamp).toFormat(DateTime.DATETIME_MED)
+  DateTime.fromSeconds(props.timestamp).toLocaleString(DateTime.DATETIME_SHORT)
 );
 
 const firestore = useFirestore();
